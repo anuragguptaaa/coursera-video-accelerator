@@ -1,0 +1,60 @@
+body {
+  width: 230px;
+  margin: 0;
+  padding: 16px;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+}
+
+h2 {
+  margin: 0 0 14px;
+  font-size: 17px;
+}
+
+label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+input[type="number"] {
+  width: 80px;
+  padding: 6px;
+  box-sizing: border-box;
+}
+
+.toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+  font-weight: 500;
+}
+
+.info {
+  padding: 9px;
+  border-radius: 6px;
+  background: #f3f3f3;
+  line-height: 1.55;
+  margin-bottom: 12px;
+}
+
+button {
+  width: 100%;
+  padding: 7px;
+  cursor: pointer;
+}
+
+#status {
+  height: 18px;
+  margin-top: 7px;
+  text-align: center;
+  font-size: 12px;
+}

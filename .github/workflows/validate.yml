@@ -1,0 +1,46 @@
+name: Validate extension
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Validate JSON files
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          for path in [Path('extension/manifest.json')]:
+              json.loads(path.read_text(encoding='utf-8'))
+              print(f'Valid JSON: {path}')
+          PY
+
+      - name: Check manifest basics
+        run: |
+          python - <<'PY'
+          import json
+          m = json.loads(open('extension/manifest.json', encoding='utf-8').read())
+          assert m.get('manifest_version') == 3
+          assert 'storage' in m.get('permissions', [])
+          assert m.get('host_permissions') == ['https://www.coursera.org/*']
+          print('Manifest checks passed.')
+          PY
+
+      - name: Privacy guardrail
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          files = [Path('extension/content.js'), Path('extension/popup.js')]
+          text = '\n'.join(p.read_text(encoding='utf-8') for p in files)
+          blocked = ['fetch(', 'XMLHttpRequest', 'WebSocket(', 'navigator.sendBeacon']
+          found = [x for x in blocked if x in text]
+          if found:
+              raise SystemExit('Unexpected network API detected: ' + ', '.join(found))
+          print('No blocked network APIs found in extension runtime code.')
+          PY

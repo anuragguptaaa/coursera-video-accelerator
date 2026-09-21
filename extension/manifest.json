@@ -1,0 +1,27 @@
+{
+  "manifest_version": 3,
+  "name": "Coursera Video Accelerator + Auto Advance",
+  "version": "4.4.0",
+  "description": "Speeds up Coursera videos, automatically skips in-video questions, and advances only when Coursera marks the next-item button ready.",
+  "permissions": [
+    "storage"
+  ],
+  "host_permissions": [
+    "https://www.coursera.org/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.coursera.org/*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Coursera Accelerator"
+  }
+}
