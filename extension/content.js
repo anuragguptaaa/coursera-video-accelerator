@@ -5,10 +5,12 @@
   const DEFAULT_LAST_SECTION_SPEED = 2.5;
   const SWITCH_POINT = 0.75;
   const SPEED_ENFORCE_INTERVAL = 100;
+  const BACKGROUND_RETRY_DELAY = 50;
 
   let normalSpeed = DEFAULT_SPEED;
   let lastSectionSpeed = DEFAULT_LAST_SECTION_SPEED;
   let autoAdvance = true;
+  let backgroundPlayback = true;
   let lastClickedItemKey = "";
 
   function log(...args) {
@@ -152,6 +154,33 @@
     }
   }
 
+  function tryResumeBackgroundVideo(video) {
+    if (!backgroundPlayback || !video || !document.hidden || !video.paused) return;
+
+    // Coursera may pause the native video when the tab becomes hidden.
+    // Because the video was already playing before the tab switch, resume it
+    // without requiring another user gesture.
+    video.play()
+      .then(() => {
+        applySpeed(video, true);
+        log("Background tab detected → resumed video playback.");
+      })
+      .catch(err => {
+        log("Could not resume background playback:", err?.message || err);
+      });
+  }
+
+  function handleVisibilityChange() {
+    if (!backgroundPlayback || !document.hidden) return;
+
+    getVideos().forEach(video => {
+      if (!video.paused) return;
+
+      // Let Coursera finish its visibility-change handling first, then resume.
+      setTimeout(() => tryResumeBackgroundVideo(video), BACKGROUND_RETRY_DELAY);
+    });
+  }
+
   function attachVideoListeners() {
     getVideos().forEach(video => {
       if (video.dataset.courseraAcceleratorAttached === "1") return;
@@ -172,6 +201,15 @@
       video.addEventListener("play", () => applySpeed(video, true));
       video.addEventListener("ratechange", () => applySpeed(video, true));
 
+      video.addEventListener("pause", () => {
+        if (!backgroundPlayback || !document.hidden) return;
+
+        // Coursera can pause the player immediately after a tab switch.
+        // Resume it only while the document is hidden, so normal user
+        // pauses while the tab is visible are still respected.
+        setTimeout(() => tryResumeBackgroundVideo(video), BACKGROUND_RETRY_DELAY);
+      });
+
       // Handle a video that is already loaded when we attach.
       tryPlayVideo(video);
     });
@@ -184,6 +222,8 @@
     tryAutoAdvance();
   });
 
+  document.addEventListener("visibilitychange", handleVisibilityChange);
+
   observer.observe(document.documentElement, {
     childList: true,
     subtree: true
@@ -193,12 +233,19 @@
     {
       normalSpeed: DEFAULT_SPEED,
       lastSectionSpeed: DEFAULT_LAST_SECTION_SPEED,
-      autoAdvance: true
+      autoAdvance: true,
+      backgroundPlayback: true
     },
     settings => {
       normalSpeed = Number(settings.normalSpeed) || DEFAULT_SPEED;
       lastSectionSpeed = Number(settings.lastSectionSpeed) || DEFAULT_LAST_SECTION_SPEED;
       autoAdvance = Boolean(settings.autoAdvance);
+      backgroundPlayback = Boolean(settings.backgroundPlayback);
+      window.postMessage({
+        source: "coursera-accelerator-background-playback",
+        type: "setEnabled",
+        enabled: backgroundPlayback
+      }, "*");
 
       attachVideoListeners();
       tick();
@@ -233,6 +280,19 @@
     if (changes.autoAdvance) {
       autoAdvance = Boolean(changes.autoAdvance.newValue);
       log(`Auto advance → ${autoAdvance ? "ON" : "OFF"}`);
+    }
+
+    if (changes.backgroundPlayback) {
+      backgroundPlayback = Boolean(changes.backgroundPlayback.newValue);
+      log(`Background playback → ${backgroundPlayback ? "ON" : "OFF"}`);
+      window.postMessage({
+        source: "coursera-accelerator-background-playback",
+        type: "setEnabled",
+        enabled: backgroundPlayback
+      }, "*");
+      if (backgroundPlayback && document.hidden) {
+        getVideos().forEach(video => tryResumeBackgroundVideo(video));
+      }
     }
   });
 })();

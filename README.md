@@ -1,134 +1,282 @@
 # Coursera Video Accelerator + Auto Advance
 
-An independent, open-source Chrome extension that adds configurable playback-speed controls and automates repetitive navigation on Coursera course pages.
+[![Validate extension](https://github.com/anuragguptaaa/coursera-video-accelerator/actions/workflows/validate.yml/badge.svg)](../../actions/workflows/validate.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Latest Release](https://img.shields.io/github/v/release/anuragguptaaa/coursera-video-accelerator)](../../releases/latest)
 
-> **Not affiliated with, endorsed by, or sponsored by Coursera.**
+A privacy-focused, open-source Chrome extension for controlling Coursera video playback and automating repetitive course navigation.
 
-## Features
+**Learn faster. Save time. Stay in control.**
 
-- Configurable playback speed for the first 75% of a video (default: **16×**)
-- Configurable playback speed for the final 25% (default: **2.5×**)
-- Speed watchdog that re-applies the configured native video rate when the Coursera player changes it
-- Automatically starts a newly loaded video when it is paused
-- Automatically clicks a visible, enabled in-video **Skip** button when a question popup appears
-- Automatically clicks Coursera's main **Go to next item** button when it becomes ready
-- Settings for both speeds and auto-advance
+---
+
+## ✨ Features
+
+### ⚡ Custom Video Speed
+
+Choose your preferred playback speeds directly from the extension popup.
+
+The default configuration is:
+
+- **0–75% of the video:** 16×
+- **Final 25%:** 2.5×
+
+Both speeds can be changed from the popup.
+
+### ▶️ Automatic Playback
+
+Automatically starts newly loaded Coursera videos without requiring manual interaction.
+
+### ⏭️ Automatic Next Item
+
+When a course item is completed, the extension automatically activates Coursera's **"Go to next item"** control.
+
+### ⏩ Automatic In-Video Skip
+
+Automatically clicks supported **"Skip"** controls that appear during Coursera videos.
+
+### 🛡️ Speed Watchdog
+
+Coursera may reset the playback rate while a video is playing.
+
+The extension continuously checks the playback rate and restores your selected speed when necessary.
+
+### ⚙️ Customizable
+
+Configure:
+
+- Main video speed
+- Final 25% video speed
+- Auto Play
+- Auto Skip
+- Auto Next
+
+---
+
+## 🔒 Privacy First
+
+Privacy is one of the main goals of this project.
+
+This extension:
+
+- Does **not** use a project-owned backend server
+- Does **not** use analytics or telemetry
+- Does **not** display advertisements
+- Does **not** require an account
+- Does **not** request unnecessary permissions
+- Is fully open source and publicly auditable
+
+The extension uses Chrome's storage functionality to save your settings. Chrome may synchronize extension settings depending on your browser/account configuration.
+
+### Don't take our word for it — verify it.
+
+You can inspect the complete source code, manifest, permissions and privacy documentation yourself.
+
+See:
+
+- [Privacy Policy](PRIVACY.md)
+- [Security Policy](SECURITY.md)
+- [Extension Manifest](extension/manifest.json)
+
+---
+
+## 🚀 Installation
+
+### 1. Download the latest release
+
+Go to the [Releases](../../releases) page and download the latest `.zip` file.
+
+### 2. Extract the ZIP
+
+Extract the downloaded ZIP file to a folder on your computer.
+
+### 3. Open Chrome Extensions
+
+Open:
+
+`chrome://extensions`
+
+### 4. Enable Developer Mode
+
+Turn on **Developer mode** in the top-right corner.
+
+### 5. Load the extension
+
+Click:
+
+**Load unpacked**
+
+Then select the extracted extension folder.
+
+### 6. Open Coursera
+
+Open Coursera and start a course video.
+
+The extension will apply your configured settings automatically.
+
+---
+
+## 🎯 Why this project?
+
+Online courses often contain repetitive interactions:
+
+**Video → Question → Skip → Completion → Next Item → New Video**
+
+This project focuses on reducing repetitive manual interactions while keeping the implementation lightweight, transparent and open source.
+
+The goal is simple:
+
+> Spend less time waiting and clicking, and more time learning.
+
+---
+
+## 🧩 How it works
+
+The extension runs directly in the browser and interacts with the Coursera page.
+
+It:
+
+1. Detects the Coursera video player.
+2. Applies the configured playback speed.
+3. Watches for playback-rate changes.
+4. Automatically restores the selected speed when necessary.
+5. Detects supported in-video Skip controls.
+6. Detects the completed course-item state.
+7. Activates the main "Go to next item" control.
+8. Automatically plays the newly loaded video.
+
+No project-owned server is required.
+
+---
+
+## 🛠️ Technology
+
+- JavaScript
+- HTML
+- CSS
+- Chrome Extensions
 - Manifest V3
-- Minimal extension permissions
+- Chrome Storage API
+- GitHub Actions
 
-## Privacy
+---
 
-### Privacy by design
+## 📁 Project Structure
 
-This project is designed to operate locally in the browser and does **not intentionally collect, sell, or transmit personal information to a server controlled by this project**.
+    coursera-video-accelerator/
+    │
+    ├── extension/
+    │   ├── manifest.json
+    │   ├── content.js
+    │   ├── popup.html
+    │   ├── popup.js
+    │   └── popup.css
+    │
+    ├── .github/
+    │   ├── ISSUE_TEMPLATE/
+    │   ├── pull_request_template.md
+    │   └── workflows/
+    │       └── validate.yml
+    │
+    ├── README.md
+    ├── PRIVACY.md
+    ├── SECURITY.md
+    ├── CONTRIBUTING.md
+    ├── CODE_OF_CONDUCT.md
+    ├── CHANGELOG.md
+    ├── LICENSE
+    └── .gitignore
 
-The extension currently:
+---
 
-- does not include an analytics or telemetry SDK;
-- does not include advertising or tracking code;
-- does not use cookies, browsing-history APIs, microphone, camera, or location APIs;
-- does not contain a backend or external API endpoint;
-- uses Chrome's `storage` permission for extension settings;
-- runs its content script only on `https://www.coursera.org/*`.
+## 🤝 Contributing
 
-### Verify it yourself
+Contributions are welcome.
 
-This is an open-source project. You do not have to rely on the README alone:
+You can help by:
 
-1. Inspect [`extension/manifest.json`](extension/manifest.json) to see the permissions and host access.
-2. Inspect [`extension/content.js`](extension/content.js) to see what the page script does.
-3. Inspect [`extension/popup.js`](extension/popup.js) to see how settings are stored.
-4. Search the repository for network APIs such as `fetch`, `XMLHttpRequest`, `WebSocket`, and analytics SDKs.
-5. Inspect the extension's network activity in Chrome DevTools if you want an independent runtime check.
+- Reporting bugs
+- Suggesting features
+- Improving the code
+- Improving documentation
+- Testing new versions
+- Opening pull requests
 
-**Important:** the extension uses Chrome's `chrome.storage.sync` API for settings. Chrome may synchronize those settings according to the user's browser/account settings. The extension itself does not send those settings to a project-owned server.
+Before contributing, please read:
 
-See [`PRIVACY.md`](PRIVACY.md) for the detailed privacy statement.
+- [Contributing Guide](CONTRIBUTING.md)
+- [Code of Conduct](CODE_OF_CONDUCT.md)
+- [Security Policy](SECURITY.md)
 
-## Installation
+### 🐛 Found a bug?
 
-### Install from source
+Please use the [Bug Report](../../issues/new?template=bug_report.md) template.
 
-1. Download or clone this repository.
-2. Open Chrome and visit `chrome://extensions`.
-3. Enable **Developer mode**.
-4. Click **Load unpacked**.
-5. Select the repository's `extension` folder.
-6. Open or reload a Coursera course page.
+### 💡 Have an idea?
 
-### Install a release ZIP
+Please use the [Feature Request](../../issues/new?template=feature_request.md) template.
 
-Download the ZIP attached to a GitHub Release, extract it, and load the extracted `extension` folder through **Load unpacked**.
+---
 
-## Configuration
+## 📋 Roadmap
 
-Open the extension popup to configure:
+Possible future improvements include:
 
-| Setting | Default | Range |
-|---|---:|---:|
-| Main speed (0–75%) | 16× | 0.25×–64× |
-| Last 25% speed | 2.5× | 0.25×–64× |
-| Auto-advance | On | On/Off |
+- Better compatibility with Coursera UI changes
+- Additional playback controls
+- Improved settings UI
+- More robust navigation detection
+- Better testing across different course layouts
+- Community-requested features
 
-## How it works
+The roadmap may evolve as the project grows.
 
-The extension operates on the page's native `<video>` element. It calculates the current video progress and applies the configured speed:
+---
 
-- **0–75%:** main speed
-- **75–100%:** last-25% speed
+## 📜 Changelog
 
-It also watches for Coursera's dynamically inserted DOM elements because Coursera is a single-page application and can replace the video/player without a full page reload.
+See [CHANGELOG.md](CHANGELOG.md) for version history.
 
-For auto-advance, the extension deliberately targets the main ready button:
+---
 
-```text
-button[aria-label="Go to next item"].cds-button-primary
-```
+## 📦 Latest Release
 
-The floating next-item icon is intentionally not used.
+The latest stable release is available on the [Releases](../../releases/latest) page.
 
-For in-video questions, it looks for a visible, enabled button whose label is exactly `Skip`.
+---
 
-## Development
+## ⚠️ Disclaimer
 
-The extension is intentionally small and has no build step at the moment.
+Coursera Video Accelerator + Auto Advance is an independent open-source browser extension.
 
-```text
-extension/
-├── manifest.json
-├── content.js
-├── popup.html
-├── popup.js
-└── popup.css
-```
+It is **not affiliated with, endorsed by, or sponsored by Coursera**.
 
-After changing the source:
+Coursera is a registered trademark of Coursera, Inc.
 
-1. Go to `chrome://extensions`.
-2. Click **Reload** on the extension.
-3. Reload the Coursera page.
-4. Test the changed behavior.
-5. Check the DevTools Console for `[Coursera Auto]` messages.
+This project is intended to provide browser-side productivity and navigation features for users of Coursera.
 
-## Contributing
+---
 
-Pull requests are welcome. See [`CONTRIBUTING.md`](CONTRIBUTING.md).
+## 📄 License
 
-Before opening a PR, please test your change on Coursera and describe:
+This project is licensed under the **MIT License**.
 
-- what changed;
-- why it was needed;
-- how you tested it;
-- whether it changes permissions or privacy behavior.
+See [LICENSE](LICENSE) for the full license text.
 
-## Reporting bugs
+---
 
-Please use the GitHub issue templates. Include the Chrome version, extension version, course/player context, steps to reproduce, and relevant console output. Do not include account credentials, personal information, or private course data.
+## ⭐ Support the Project
 
-## Roadmap
+If this project is useful to you:
 
-Ideas can be proposed through GitHub Issues and Pull Requests. Features that increase permissions, collect data, or introduce external services should include an explicit privacy/security discussion in the PR.
+- ⭐ Star the repository
+- 🐛 Report bugs
+- 💡 Suggest improvements
+- 🔧 Contribute code
+- 📢 Share the project with other learners
 
-## License
+Every contribution helps improve the project.
 
-This project is released under the [MIT License](LICENSE).
+---
+
+**Built with ❤️ for learners.**

@@ -1,6 +1,7 @@
 const speedInput = document.getElementById("speed");
 const lastSpeedInput = document.getElementById("lastSpeed");
 const autoAdvanceInput = document.getElementById("autoAdvance");
+const backgroundPlaybackInput = document.getElementById("backgroundPlayback");
 const saveButton = document.getElementById("save");
 const status = document.getElementById("status");
 
@@ -12,11 +13,12 @@ function showStatus(message) {
 }
 
 chrome.storage.sync.get(
-  { normalSpeed: 16, lastSectionSpeed: 2.5, autoAdvance: true },
+  { normalSpeed: 16, lastSectionSpeed: 2.5, autoAdvance: true, backgroundPlayback: true },
   settings => {
     speedInput.value = settings.normalSpeed;
     lastSpeedInput.value = settings.lastSectionSpeed;
     autoAdvanceInput.checked = settings.autoAdvance;
+    backgroundPlaybackInput.checked = settings.backgroundPlayback;
   }
 );
 
@@ -37,7 +39,8 @@ saveButton.addEventListener("click", () => {
     {
       normalSpeed: speed,
       lastSectionSpeed: lastSpeed,
-      autoAdvance: autoAdvanceInput.checked
+      autoAdvance: autoAdvanceInput.checked,
+      backgroundPlayback: backgroundPlaybackInput.checked
     },
     () => showStatus("Saved")
   );
